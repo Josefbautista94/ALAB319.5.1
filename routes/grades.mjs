@@ -1,6 +1,6 @@
 import express from "express";
 import { ObjectId } from "mongodb";
-import { getDb } from "../db/conn.mjs"; // ⬅️ named import
+import { getDb } from "../db/conn.mjs";
 
 const router = express.Router();
 
