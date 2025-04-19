@@ -1,23 +1,42 @@
 import express from "express";
 import { ObjectId } from "mongodb";
-import { getDb } from "../db/conn.mjs";
+// import { getDb } from "../db/conn.mjs";
+import Grade from "../models/Grades.js";
+
 
 const router = express.Router();
 
-// Create a single grade entry
+// // Create a single grade entry
+// router.post("/", async (req, res) => {
+//   const db = getDb();
+//   const collection = db.collection("grades");
+//   let newDocument = req.body;
+
+//   if (newDocument.student_id) {
+//     newDocument.learner_id = newDocument.student_id;
+//     delete newDocument.student_id;
+//   }
+
+//   const result = await collection.insertOne(newDocument);
+//   res.status(201).send(result);
+// });
+
 router.post("/", async (req, res) => {
-  const db = getDb();
-  const collection = db.collection("grades");
-  let newDocument = req.body;
+  try {
+    const newDoc = { ...req.body };
 
-  if (newDocument.student_id) {
-    newDocument.learner_id = newDocument.student_id;
-    delete newDocument.student_id;
+    if (newDoc.student_id) {
+      newDoc.learner_id = newDoc.student_id;
+      delete newDoc.student_id;
+    }
+
+    const result = await Grade.create(newDoc);
+    res.status(201).send(result);
+  } catch (err) {
+    res.status(500).send(err.message);
   }
-
-  const result = await collection.insertOne(newDocument);
-  res.status(201).send(result);
 });
+
 
 // Get a single grade entry
 router.get("/:id", async (req, res) => {
